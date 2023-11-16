@@ -1,95 +1,152 @@
-import Image from 'next/image'
+'use client'
+
 import styles from './page.module.css'
+import React, { useState, useEffect } from 'react'
+import { TiShoppingCart } from "react-icons/ti";
+import { FiShoppingBag } from "react-icons/fi";
+import 'react-loading-skeleton/dist/skeleton.css'
+import { IoCloseCircle } from "react-icons/io5";
+import SkeletonComponent from './components/skeleton/Skeleton';
+
+
+interface Products {
+  id: number,
+  name: string,
+  brand: string,
+  description: string,
+  price: number,
+  photo: string,
+  qtd?: number
+}
 
 export default function Home() {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [items, setItems] = useState<Products[]>([])
+  const [cart, setCart] = useState<Products[]>([])
+  const [showCart, setShowCart] = useState<boolean>(false)
+  const  [priceQtd, setPrice] = useState<number>(0)
+
+  useEffect(() => {
+    async function getItems() {
+      setLoading(false)
+      const fetchRequest = await fetch('https://mks-frontend-challenge-04811e8151e6.herokuapp.com/api/v1/products?page=1&rows=8&sortBy=id&orderBy=DESC')
+      const requestJson = await fetchRequest.json()
+      setItems(requestJson.products)
+      setLoading(true)
+    }
+    getItems()
+  }, [])
+
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
+    <>
+    <header className={styles.navMenu}>
+      <div>
+        <p className={styles.mks}>MKS 
+        <span className={styles.system}>Sistemas</span>
         </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+      </div>
+        <button onClick={() => setShowCart(true)} className={styles.btnCart}><TiShoppingCart className={styles.cart} /> <p className={styles.cartNumber}>{cart?.length ? cart.length : 0}</p> </button>
+    </header>
+    {showCart && 
+    <>
+    <div className={styles.shownCart}>
+      <div className={styles.titleCart}>
+        <h1 className={styles.cartTitle}>Carrinho de compras</h1>
+        <IoCloseCircle onClick={() => setShowCart(false)} className={styles.closeCart}/>
+      </div>
+      <div className={styles.divTotalAndProducts}>
+      <div className={styles.cartItems}>
+        {cart.map(product => {
+          let newPrice = product.qtd!
+          
+          function addProduct() {
+            product.qtd! ++
+            if(product.qtd) {
+              setPrice(priceQtd + Number(product.price))
+            }
+          }
+
+          function removeProduct() {
+            if(product.qtd === 0) {
+              product.qtd = 0
+              setPrice(priceQtd)
+            } else if(product.qtd) {
+              product.qtd--
+              setPrice(priceQtd - Number(product.price))
+            }
+          }
+          
+          return(
+          <div key={product.id} className={styles.itemDivCart}>
+          <div className={styles.productCartItem}>
+            <img className={styles.cartImg} src={product.photo} alt="productImg" />
+            <h1 className={styles.cartItemName}>{product.name}</h1>
+            <div className={styles.qtdValue}>
+              <p className={styles.qtdItem}>Qtd:</p>
+              <div className={styles.btnCartPlusLess}>
+                <div onClick={removeProduct} className={styles.btnPlus}>-</div>
+                <hr className={styles.line}/>
+                <p className={styles.qtdBtn}>{product.qtd}</p>
+                <hr  className={styles.line}/>
+                <div onClick={() => addProduct()} className={styles.btnLess}>+</div>
+              </div>
+            </div>
+            <h3 className={styles.productCartPrice}>R${Math.trunc(product.price * newPrice).toLocaleString('pt-br', {minimumFractionDigits: 0})}</h3>
+          </div>
+          <IoCloseCircle onClick={() => {
+            let remove = cart.findIndex((item: Products) => item.id === product.id)
+            let removed = cart.splice(remove, 1)
+            setPrice(priceQtd - (removed[0].price * removed[0].qtd! ))
+            setCart(cart)
+          }} className={styles.btnRemove} />
+          </div>
+        )})}
+      </div>
+      <div className={styles.totalAndPrice}>
+      <h3 className={styles.totalPrice}>Total: 
+      </h3>
+      <p>
+      R${priceQtd}
+      </p>
+      </div>
+      </div>
+      <button className={styles.endBtn}>
+        <p>
+        Finalizar Compra
+        </p>
+        </button>
+    </div>
+    </>
+    }
+      {loading ? <>
+        <div className={styles.mainDivProducts}>
+        {items?.map((product: Products) => (
+      <div className={styles.divProduct} key={product.id}>
+        <img className={styles.img} src={product.photo} alt={product.name} />
+        <div className={styles.namePrice}>
+        <div className={styles.divName}>
+        <h1 className={styles.productName}>{product.name}</h1>
         </div>
+        <div className={styles.divPrice}>
+        <h3>R${Math.trunc(product.price).toLocaleString('pt-br', {minimumFractionDigits: 0})}</h3>
+        </div>
+        </div>
+        <p className={styles.productDescription}>{product.description}</p>
+        <button onClick={() => {
+          if(!cart.find((item) => item === product)) {
+            product.qtd = 1
+            setPrice(priceQtd + Number(product.price))
+            setCart([...cart, product])}} 
+          }
+          className={styles.buyBtn}> <FiShoppingBag className={styles.shop}/>
+ <p>COMPRAR</p></button>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    ))} 
+    </div>
+    </> : <SkeletonComponent/>} 
+    <footer className={styles.footer}>MKS sistemas © Todos os direitos reservados</footer>
+    </>  
   )
 }
