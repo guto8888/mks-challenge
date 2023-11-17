@@ -1,3 +1,5 @@
+@import "./scss/variables.module.scss";
+
 .mainDivProducts {
     height: 601px;
     margin: 120px 251px;
@@ -9,7 +11,7 @@
 }
 
 .navMenu {
-    background-color: #0F52BA;
+    background-color: $blue;
     height: 110px;
     display: flex;
     justify-content: space-between;
@@ -21,7 +23,7 @@
     height: 44px;
     margin-top: 28px;
     margin-left: 65px;
-    color: #FFFFFF;
+    color: $white;
     font-family: Montserrat;
     font-size: 40px;
     font-weight: 600;
@@ -76,7 +78,7 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 10px;
-    box-shadow: 0px 2px 8px 0px #00000022;
+    box-shadow: 0px 2px 8px 0px $lightBlack;
 }
 
 .productName {
@@ -107,7 +109,7 @@
     width: 64px;
     height: 26px;
     border-radius: 5px;
-    background: #373737;
+    background: $grey;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -120,7 +122,7 @@
     line-height: 15px;
     letter-spacing: 0px;
     text-align: left;
-    color: #FFFFFF;
+    color: $white;
 }
 
 .namePrice {
@@ -138,9 +140,9 @@
     width: 218px;
     height: 31.91px;
     border-radius: 0px 0px 8px 8px;
-    background-color: #0F52BA;
+    background-color: $blue;
     border-style: none;
-    color: #FFFFFF;
+    color: $white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -183,7 +185,7 @@
     width: 486px;
     height: 1050px;
     right: 0;
-    background-color: #0F52BA;
+    background-color: $blue;
     position: absolute;
     top:0;
     display: flex;
@@ -196,11 +198,11 @@
     height: 95px;
     padding-left: 23px;
     border-radius: 8px;
-    background-color:#FFFFFF;
+    background-color: $white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: -2px 2px 10px 0px #0000000D;
+    box-shadow: -2px 2px 10px 0px $lightBlack;
 }
 
 .cartImg {
@@ -258,7 +260,7 @@
     font-weight: 400;
     letter-spacing: 0em;
     text-align: left;
-    color: #000000;
+    color: $black;
     padding: 5px;
 }
 
@@ -277,7 +279,7 @@
 .line {
     height: 11.5px;
     color: #BFBFBF;
-    border: 0.1px solid #BFBFBF;
+    border: 0.1px solid $grey;
     border-left: 0px;
 }
 
@@ -290,7 +292,7 @@
     line-height: 17px;
     letter-spacing: 0px;
     text-align: left;
-    color: #000000;
+    color: $black;
 }
 
 .btnRemove {
@@ -333,7 +335,7 @@
     letter-spacing: 0em;
     text-align: left;
     padding: 0 55px;
-    color: #FFFFFF;
+    color: $white;
 }
 
 .closeCart {
@@ -355,7 +357,7 @@
     line-height: 15px;
     letter-spacing: 0px;
     text-align: left;
-    color: #FFFFFF;
+    color: $white;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -369,8 +371,8 @@
 .endBtn {
     width: 486px;
     height: 97px;
-    background-color: #000000;
-    color: #FFFFFF;
+    background-color: $black;
+    color: $white;
     display: flex;
     justify-content: center;
     align-items: center;

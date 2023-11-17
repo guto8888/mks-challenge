@@ -1,12 +1,12 @@
 'use client'
 
-import styles from './page.module.css'
 import React, { useState, useEffect } from 'react'
 import { TiShoppingCart } from "react-icons/ti";
 import { FiShoppingBag } from "react-icons/fi";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { IoCloseCircle } from "react-icons/io5";
 import SkeletonComponent from './components/skeleton/Skeleton';
+import styles from './page.module.scss'
 
 
 interface Products {
@@ -86,16 +86,16 @@ export default function Home() {
             <div className={styles.qtdValue}>
               <p className={styles.qtdItem}>Qtd:</p>
               <div className={styles.btnCartPlusLess}>
-                <div onClick={removeProduct} className={styles.btnPlus}>-</div>
+                <div data-testid="less" onClick={removeProduct} className={styles.btnPlus}>-</div>
                 <hr className={styles.line}/>
                 <p className={styles.qtdBtn}>{product.qtd}</p>
                 <hr  className={styles.line}/>
-                <div onClick={() => addProduct()} className={styles.btnLess}>+</div>
+                <div data-testid="more" onClick={() => addProduct()} className={styles.btnLess}>+</div>
               </div>
             </div>
             <h3 className={styles.productCartPrice}>R${Math.trunc(product.price * newPrice).toLocaleString('pt-br', {minimumFractionDigits: 0})}</h3>
           </div>
-          <IoCloseCircle onClick={() => {
+          <IoCloseCircle data-testid="removeCart" onClick={() => {
             let remove = cart.findIndex((item: Products) => item.id === product.id)
             let removed = cart.splice(remove, 1)
             setPrice(priceQtd - (removed[0].price * removed[0].qtd! ))
@@ -134,7 +134,7 @@ export default function Home() {
         </div>
         </div>
         <p className={styles.productDescription}>{product.description}</p>
-        <button onClick={() => {
+        <button data-testid="addCart" onClick={() => {
           if(!cart.find((item) => item === product)) {
             product.qtd = 1
             setPrice(priceQtd + Number(product.price))
