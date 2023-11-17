@@ -108,7 +108,7 @@ export default function Home() {
       <h3 className={styles.totalPrice}>Total: 
       </h3>
       <p>
-      R${priceQtd}
+      R${Math.trunc(priceQtd).toLocaleString('pt-br', {minimumFractionDigits: 0})}
       </p>
       </div>
       </div>

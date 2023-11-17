@@ -1,0 +1,11 @@
+@import "./scss/variables.module.scss";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+footer {
+height: 34px;
+background-color: $white;
+}

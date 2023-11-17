@@ -309,6 +309,7 @@
 .itemDivCart {
     display: flex;
     justify-content: center;
+    margin: 2% 0;
 }
 
 .cartItems {
@@ -316,6 +317,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5%;   
+    margin-top: 3%;
 }
 
 .titleCart {
