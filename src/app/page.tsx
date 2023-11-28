@@ -1,12 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useQuery } from 'react-query';
 import { TiShoppingCart } from "react-icons/ti";
 import { FiShoppingBag } from "react-icons/fi";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { IoCloseCircle } from "react-icons/io5";
 import SkeletonComponent from './components/skeleton/Skeleton';
 import styles from './page.module.scss'
+import axios from 'axios';
 
 
 interface Products {
@@ -19,25 +21,20 @@ interface Products {
   qtd?: number
 }
 
+interface Data {
+  products: Products[]
+}
+
 export default function Home() {
-  const [loading, setLoading] = useState<boolean>(false)
-  const [items, setItems] = useState<Products[]>([])
   const [cart, setCart] = useState<Products[]>([])
   const [showCart, setShowCart] = useState<boolean>(false)
   const  [priceQtd, setPrice] = useState<number>(0)
 
-  useEffect(() => {
-    async function getItems() {
-      setLoading(false)
-      const fetchRequest = await fetch('https://mks-frontend-challenge-04811e8151e6.herokuapp.com/api/v1/products?page=1&rows=8&sortBy=id&orderBy=DESC')
-      const requestJson = await fetchRequest.json()
-      setItems(requestJson.products)
-      setLoading(true)
-    }
-    getItems()
-  }, [])
-
-
+  const { data, isLoading } = useQuery("items", async() => {
+    return axios.get<Data>('https://mks-frontend-challenge-04811e8151e6.herokuapp.com/api/v1/products?page=1&rows=8&sortBy=id&orderBy=DESC').then(({ data }) => data.products)
+  }, {
+    retry: 2
+  })
 
   return (
     <>
@@ -47,7 +44,7 @@ export default function Home() {
         <span className={styles.system}>Sistemas</span>
         </p>
       </div>
-        <button onClick={() => setShowCart(true)} className={styles.btnCart}><TiShoppingCart className={styles.cart} /> <p className={styles.cartNumber}>{cart?.length ? cart.length : 0}</p> </button>
+        <button onClick={() => setShowCart(true)} className={styles.btnCart}><TiShoppingCart className={styles.cart} /> <p className={styles.cartNumber}>{cart?.length ? cart.length : 0}</p></button>
     </header>
     {showCart && 
     <>
@@ -99,7 +96,7 @@ export default function Home() {
             let remove = cart.findIndex((item: Products) => item.id === product.id)
             let removed = cart.splice(remove, 1)
             setPrice(priceQtd - (removed[0].price * removed[0].qtd! ))
-            setCart(cart)
+            setCart([...cart])
           }} className={styles.btnRemove} />
           </div>
         )})}
@@ -120,9 +117,9 @@ export default function Home() {
     </div>
     </>
     }
-      {loading ? <>
+      {!isLoading ? <>
         <div className={styles.mainDivProducts}>
-        {items?.map((product: Products) => (
+        {data!.map((product: Products) => (
       <div className={styles.divProduct} key={product.id}>
         <img className={styles.img} src={product.photo} alt={product.name} />
         <div className={styles.namePrice}>
